@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,55 +6,41 @@ using System.Threading.Tasks;
 
 namespace IC_o51_Skirko_Ann_08_02_2026.Models
 {
-    // Статус квесту
-    public enum QuestStatus
-    {
-        Active,      // активний
-        Completed    // виконаний
-    }
-
-    // Категорія квесту
-    public enum QuestCategory
-    {
-        Study,
-        Work,
-        Health,
-        Personal
-    }
-
-    // Складність
-    public enum QuestDifficulty
-    {
-        Easy,
-        Medium,
-        Hard
-    }
-
-    // Клас квесту
+    // Модель квесту (тільки дані)
     public class Quest
     {
-        public string Name { get; private set; }          // назва
-        public string Description { get; private set; }   // опис
-        public QuestCategory Category { get; private set; }   // категорія
-        public QuestDifficulty Difficulty { get; private set; } // складність
-        public QuestStatus Status { get; private set; }   // статус
+        // Унікальний ідентифікатор
+        public int Id { get; set; }
 
-        public int ExperienceReward { get; private set; } // нагорода XP
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public QuestCategory Category { get; private set; }
+        public QuestDifficulty Difficulty { get; private set; }
+        public QuestStatus Status { get; private set; }
+        public int ExperienceReward { get; private set; }
 
+        // Дата створення
+        public DateTime CreatedDate { get; private set; }
+
+        // Дата виконання
+        public DateTime? CompletedDate { get; private set; }
+        
         // Конструктор
         public Quest(string name,
                      string description,
                      QuestCategory category,
                      QuestDifficulty difficulty)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Назва квесту не може бути порожньою.");
+
             Name = name;
             Description = description;
             Category = category;
             Difficulty = difficulty;
-
-            Status = QuestStatus.Active; // по замовчуванню активний
-
-            ExperienceReward = CalculateReward(); // розрахунок XP
+            Status = QuestStatus.Active;
+            CreatedDate = DateTime.Now;
+            ExperienceReward = CalculateReward();
         }
 
         // Розрахунок нагороди
@@ -72,13 +58,17 @@ namespace IC_o51_Skirko_Ann_08_02_2026.Models
         // Виконати квест
         public void Complete()
         {
-            Status = QuestStatus.Completed;
+            if (Status == QuestStatus.Active)
+            {
+                Status = QuestStatus.Completed;
+                CompletedDate = DateTime.Now;
+            }
         }
 
-        // Як буде виглядати в ListBox
+        // Відображення в ListBox
         public override string ToString()
         {
-            return $"{Name} | {Category} | {Difficulty}";
+            return $"[{Id}] {Name} | {Category} | {Difficulty} | {Status}";
         }
     }
 }
