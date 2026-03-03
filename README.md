@@ -30,5 +30,3 @@
   - Dependency Inversion  
 - **Singleton:** Клас `GameManager`  
 - **UI:** Windows Forms (`Form1`) 
-
-## Структура проєкту
